@@ -3,12 +3,47 @@ import { useNavigate } from 'react-router-dom';
 import { authService } from '../../services/authService';
 
 export default function LoginPage() {
-  const [uasg, setUasg] = useState('MASTER'); const [login, setLogin] = useState('admin'); const [senha, setSenha] = useState('Salc1234');
-  const [erro, setErro] = useState(''); const [loading, setLoading] = useState(false); const navigate = useNavigate();
-  const onSubmit = async (e: FormEvent) => { e.preventDefault(); setErro(''); setLoading(true); try {
-      const data = await authService.login({ uasg: uasg || undefined, login, senha });
-      if (data.session.deve_trocar_senha) return navigate('/trocar-senha');
-      navigate(data.session.is_super_admin ? '/admin-global' : '/dashboard');
-    } catch (err: any) { setErro(err?.response?.data?.detail || 'Erro no login'); } finally { setLoading(false); } };
-  return <div className='auth-page'><form className='card' onSubmit={onSubmit}><h1>SGI-SALC</h1><p>Sistema de Gestão por UASG</p><input placeholder='UASG ou MASTER' value={uasg} onChange={e=>setUasg(e.target.value)} /><input placeholder='Login' value={login} onChange={e=>setLogin(e.target.value)} /><input type='password' placeholder='Senha' value={senha} onChange={e=>setSenha(e.target.value)} />{erro && <p className='error'>{erro}</p>}<button disabled={loading}>{loading ? 'Entrando...' : 'Entrar'}</button></form></div>;
+  const [uasg, setUasg] = useState('');
+  const [login, setLogin] = useState('');
+  const [senha, setSenha] = useState('');
+  const [erro, setErro] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setErro('');
+    setLoading(true);
+    try {
+      const response = await authService.login({ uasg: uasg || undefined, login, senha });
+      if (response.session.deve_trocar_senha === true) {
+        navigate('/trocar-senha', { replace: true });
+      } else if (response.session.is_super_admin === true) {
+        navigate('/admin-global', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
+    } catch (err: any) {
+      setErro(err?.response?.data?.detail || 'Não foi possível entrar. Verifique suas credenciais.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className='auth-page'>
+      <form className='card auth-card' onSubmit={onSubmit}>
+        <h1>SGI-SALC</h1>
+        <p>Sistema de Gestão de Licitações, Aquisições e Contratos</p>
+
+        <input autoComplete='off' placeholder='UASG (ou MASTER para super admin)' value={uasg} onChange={(e) => setUasg(e.target.value)} />
+        <input autoComplete='username' placeholder='Login' value={login} onChange={(e) => setLogin(e.target.value)} required />
+        <input autoComplete='current-password' type='password' placeholder='Senha' value={senha} onChange={(e) => setSenha(e.target.value)} required />
+
+        {erro && <p className='error'>{erro}</p>}
+
+        <button disabled={loading} type='submit'>{loading ? 'Entrando...' : 'Entrar'}</button>
+      </form>
+    </div>
+  );
 }

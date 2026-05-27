@@ -1,9 +1,64 @@
-:root { --primary:#183A59; --bg:#F3F4F6; --surface:#fff; --danger:#A61B1B; --border:#D8E1EA; }
-body { margin:0; font-family: Inter, Arial, sans-serif; background:var(--bg); color:#102A43; }
-.auth-page { min-height:100vh; display:flex; align-items:center; justify-content:center; }
-.card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; width:min(420px,90vw); box-shadow:0 8px 24px rgba(16,42,67,.08); display:flex; flex-direction:column; gap:10px; }
-input, button { padding:10px 12px; border-radius:8px; border:1px solid var(--border); }
-button { background:var(--primary); color:white; font-weight:600; cursor:pointer; }
-.error { color:var(--danger); }
+:root {
+  --primary:#183A59;
+  --primary-dark:#102A43;
+  --bg:#F3F4F6;
+  --surface:#FFFFFF;
+  --border:#D8E1EA;
+  --danger:#A61B1B;
+  --text:#102A43;
+}
+* { box-sizing: border-box; }
+body {
+  margin:0;
+  font-family: Inter, 'Segoe UI', Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+.auth-page {
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+.card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  box-shadow:0 10px 30px rgba(16,42,67,.08);
+}
+.auth-card {
+  width:min(460px,95vw);
+  padding:28px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.auth-card h1 { margin:0; color:var(--primary); }
+.auth-card p { margin:0 0 6px 0; color:#425466; }
+input, button {
+  padding:11px 12px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  font-size:14px;
+}
+input:focus {
+  border-color:var(--primary);
+  outline:2px solid rgba(24,58,89,.15);
+}
+button {
+  background:var(--primary);
+  color:#fff;
+  border-color:var(--primary);
+  font-weight:600;
+  cursor:pointer;
+}
+button:hover { background:var(--primary-dark); }
+button:disabled { opacity:.7; cursor:not-allowed; }
+.error {
+  margin:0;
+  color:var(--danger);
+  font-size:13px;
+}
 .page { padding:24px; }
-.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; }
+.page-card { padding:20px; max-width:720px; }
