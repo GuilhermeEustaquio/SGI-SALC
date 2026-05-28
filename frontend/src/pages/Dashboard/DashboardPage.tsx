@@ -1,1 +1,5 @@
-export default function DashboardPage(){return <div className='page'><h1>Dashboard Operacional</h1><div className='grid'><div className='card'>Licitações: 0</div><div className='card'>Contratos: 0</div><div className='card'>Aquisições: 0</div></div></div>}
+import ModulePlaceholder from '../shared/ModulePlaceholder';
+
+export default function DashboardPage() {
+  return <ModulePlaceholder title='Dashboard' description='Visão geral operacional da UASG atual.' />;
+}

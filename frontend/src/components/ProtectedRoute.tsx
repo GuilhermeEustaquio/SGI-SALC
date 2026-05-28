@@ -3,16 +3,10 @@ import { authService } from '../services/authService';
 
 export default function ProtectedRoute() {
   const location = useLocation();
-  const token = authService.getToken();
+  const isValid = authService.validateLocalSession();
   const session = authService.getSession();
 
-  if (!token || !session) {
-    authService.logout();
-    return <Navigate to='/login' replace />;
-  }
-
-  if (typeof session !== 'object' || session === null || !('deve_trocar_senha' in session)) {
-    authService.logout();
+  if (!isValid || !session) {
     return <Navigate to='/login' replace />;
   }
 
