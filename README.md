@@ -1,38 +1,57 @@
-# Sistema de Gestão SALC por UASG
+# SGI-SALC
 
-## Fase 1 e 2 (entregue)
-- Monorepo com `frontend/` e `backend/`
-- Backend FastAPI + SQLAlchemy + JWT + seed admin
-- Frontend React/Vite com login, troca de senha e admin global básico
-- Docker Compose com postgres, backend e frontend
+## Requisitos
+- Python **3.12.x** (não usar Python 3.14 por enquanto)
+- Node.js 18+
+- Docker Desktop
 
-## Rodar com Docker
-```bash
-cp .env.example .env
-docker compose up --build
-```
-
-## Rodar local (sem Docker)
-### Backend
+## Backend (FastAPI + Alembic)
 ```bash
 cd backend
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
 cp .env.example .env
-uvicorn app.main:app --reload
+py -3.12 -m venv .venv
+# Windows: .venv\Scripts\activate
+# Linux/macOS: source .venv/bin/activate
+pip install -r requirements.txt
 ```
-### Frontend
+
+Subir PostgreSQL:
+```bash
+cd ..
+docker compose up postgres -d
+```
+
+Executar migrations e backend:
+```bash
+cd backend
+python -m alembic upgrade head
+python -m uvicorn app.main:app --reload
+```
+
+> O `alembic.ini` já está versionado com seções de logging completas. Não é necessário ajuste manual para evitar `KeyError: 'formatters'`.
+
+## Frontend (Vite + React + TypeScript)
 ```bash
 cd frontend
+cp .env.example .env
+# .env
+# VITE_API_URL=http://127.0.0.1:8000
 npm install
+npm run build
 npm run dev
 ```
 
-## Login inicial
-- login: `admin`
-- senha: `Salc1234`
-- no primeiro login: troca obrigatória de senha
+## Login master inicial
+- UASG: `MASTER`
+- Login: `admin`
+- Senha: `Salc1234`
 
-## Observações
-- Alembic está preparado como estrutura inicial; nesta fase as tabelas são criadas em startup para acelerar bootstrap.
-- Fases 3+ vão expandir CRUD completo, vínculos e logs detalhados.
+Primeiro acesso:
+1. Login redireciona para `/trocar-senha`
+2. Após trocar senha, redireciona para `/admin-global`
+
+## Observações importantes
+- O Swagger `Authorize` padrão (username/password) pode não refletir o login com UASG.
+- Teste autenticação por `POST /auth/login` com JSON `{ "uasg": "MASTER", "login": "admin", "senha": "..." }`.
+- CORS configurado para `http://localhost:5173` e `http://127.0.0.1:5173`.
+- Sessão frontend é validada automaticamente. Sessões antigas/incompatíveis são limpas sem precisar `localStorage.clear()` manual.
